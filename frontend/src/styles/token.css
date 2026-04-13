@@ -1,0 +1,277 @@
+@theme {
+
+  /* ================================
+     FONT FAMILY
+  ================================ */
+  --font-sans: 'Inter', sans-serif;
+
+  /* ================================
+     FONT WEIGHTS
+  ================================ */
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  /* ================================
+     DISPLAY
+  ================================ */
+  --text-display-lg: 64px;
+  --text-display-lg--line-height: 72px;
+
+  --text-display-md: 48px;
+  --text-display-md--line-height: 56px;
+
+  --text-display-sm: 40px;
+  --text-display-sm--line-height: 48px;
+
+  /* ================================
+     HEADLINE
+  ================================ */
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+
+  --text-headline-md: 28px;
+  --text-headline-md--line-height: 36px;
+
+  --text-headline-sm: 24px;
+  --text-headline-sm--line-height: 32px;
+
+  /* ================================
+     TITLE
+  ================================ */
+  --text-title-lg: 22px;
+  --text-title-lg--line-height: 28px;
+
+  --text-title-md: 16px;
+  --text-title-md--line-height: 24px;
+
+  --text-title-sm: 14px;
+  --text-title-sm--line-height: 20px;
+
+  /* ================================
+     LABEL
+  ================================ */
+  --text-label-lg: 14px;
+  --text-label-lg--line-height: 20px;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 16px;
+
+  /* ================================
+     BODY
+  ================================ */
+  --text-body-xl: 18px;
+  --text-body-xl--line-height: 28px;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 16px;
+
+  /* ================================
+     PRIMARY — Indigo
+  ================================ */
+  --color-primary-light:        #ededfc;
+  --color-primary-light-hover:  #e5e3fb;
+  --color-primary-light-active: #c8c6f7;
+  --color-primary:              #4f46e5;
+  --color-primary-hover:        #473fce;
+  --color-primary-active:       #3f38b7;
+  --color-primary-dark:         #3b35ac;
+  --color-primary-dark-hover:   #2f2a89;
+  --color-primary-dark-active:  #241f67;
+  --color-primary-darker:       #1c1950;
+
+  /* ================================
+     SECONDARY — Deep Night
+  ================================ */
+  --color-secondary-light:        #e6e6e8; /* Foundation /Deep Space/Light */
+  --color-secondary-light-hover:  #d9dadc;
+  --color-secondary-light-active: #b1b2b7;
+  --color-secondary:              #020617;
+  --color-secondary-hover:        #020515;
+  --color-secondary-active:       #020512;
+  --color-secondary-dark:         #020511;
+  --color-secondary-dark-hover:   #01040e;
+  --color-secondary-dark-active:  #01030a;
+  --color-secondary-darker:       #010208;
+
+  /* ================================
+     ACCENT — Soft Indigo
+  ================================ */
+  --color-accent-light:        #f6f8ff;
+  --color-accent-light-hover:  #f2f4ff;
+  --color-accent-light-active: #e3e8fe;
+  --color-accent:              #a5b4fc;
+  --color-accent-hover:        #95a2e3;
+  --color-accent-active:       #8490ca;
+  --color-accent-dark:         #7c87bd;
+  --color-accent-dark-hover:   #636c97;
+  --color-accent-dark-active:  #4a5171;
+  --color-accent-darker:       #3a3f58;
+
+  /* ================================
+     TEXT BUTTON SPECIFIC
+  ================================ */
+  --color-text-btn-disabled-bg:   #efe9ec;
+
+  /* ================================
+     SUCCESS — Green
+  ================================ */
+  --color-success-light:        #e9f9ef;
+  --color-success-light-hover:  #def6e7;
+  --color-success-light-active: #baedcd;
+  --color-success:              #22c55e;
+  --color-success-hover:        #1fb155;
+  --color-success-active:       #1b9e4b;
+  --color-success-dark:         #1a9447;
+  --color-success-dark-hover:   #147638;
+  --color-success-dark-active:  #0f592a;
+  --color-success-darker:       #0c4521;
+
+  /* ================================
+     WARNING — Orange
+  ================================ */
+  --color-warning-light:        #fef5e7;
+  --color-warning-light-hover:  #fef0da;
+  --color-warning-light-active: #fce1b3;
+  --color-warning:              #f59e0b;
+  --color-warning-hover:        #dd8e0a;
+  --color-warning-active:       #c47e09;
+  --color-warning-dark:         #b87708;
+  --color-warning-dark-hover:   #935f07;
+  --color-warning-dark-active:  #6e4705;
+  --color-warning-darker:       #563704;
+
+  /* ================================
+     ERROR — Red
+  ================================ */
+  --color-error-light:        #feecef;
+  --color-error-light-hover:  #fde2e7;
+  --color-error-light-active: #fcc3cd;
+  --color-error:              #f43f5e;
+  --color-error-hover:        #dc3955;
+  --color-error-active:       #c3324b;
+  --color-error-dark:         #b72f47;
+  --color-error-dark-hover:   #922638;
+  --color-error-dark-active:  #6e1c2a;
+  --color-error-darker:       #551621;
+
+  /* ================================
+     NEUTRALS
+  ================================ */
+  --color-white:       #ffffff;
+  --color-bg-gray-css: #feffff;  /* renamed — bg-gray family is below */
+  --color-off-white:   #fcfdfd;
+  --color-light-gray:  #e6e6e6;  /* Foundation /whites/Normal :hover — fixed from #e6e6e8 */
+  --color-slate-light: #f0f1f3;
+
+  --color-gray-100: #f9fafb;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #ced0d4;
+  --color-gray-400: #b7b9bc;
+  --color-gray-500: #acadb0;
+  --color-gray-600: #898b8d;
+  --color-gray-700: #67686a;
+  --color-gray-800: #505152;
+  --color-gray-900: #2d343f;
+
+  --color-blackish:          #020617;  /* alias → secondary/Normal */
+
+  /* ── Figma Foundation tokens (not in gray scale) ── */
+  --color-slateblue-darker:  #232931;  /* alias → slateblue/Darker (below)             */
+  --color-neutral-mid:       #595959;  /* alias → whites/Darker (below)                 */
+  --color-neutral-muted:     #707071;  /* alias → bg-gray/Dark :active (below)          */
+
+  /* ================================
+     SLATEBLUE — Foundation /Slateblue
+  ================================ */
+  --color-slateblue-light:        #f0f1f3;
+  --color-slateblue-light-hover:  #e8eaee;
+  --color-slateblue-light-active: #cfd4db;
+  --color-slateblue:              #64748b;
+  --color-slateblue-hover:        #5a687d;
+  --color-slateblue-active:       #505d6f;
+  --color-slateblue-dark:         #4b5768;
+  --color-slateblue-dark-hover:   #3c4653;
+  --color-slateblue-dark-active:  #2d343f;
+  --color-slateblue-darker:       #232931;
+
+  /* ================================
+     WHITES — Foundation /whites
+  ================================ */
+  --color-whites-light:        #ffffff;
+  --color-whites-light-hover:  #ffffff;
+  --color-whites-light-active: #ffffff;
+  --color-whites:              #ffffff;
+  --color-whites-hover:        #e6e6e6;
+  --color-whites-active:       #cccccc;
+  --color-whites-dark:         #bfbfbf;
+  --color-whites-dark-hover:   #999999;
+  --color-whites-dark-active:  #737373;
+  --color-whites-darker:       #595959;
+
+  /* ================================
+     BG-GRAY — Foundation /bg-gray
+  ================================ */
+  --color-bg-gray-light:        #feffff;
+  --color-bg-gray-light-hover:  #fefefe;
+  --color-bg-gray-light-active: #fdfdfe;
+  --color-bg-gray:              #f9fafb;
+  --color-bg-gray-hover:        #e0e1e2;
+  --color-bg-gray-active:       #c7c8c9;
+  --color-bg-gray-dark:         #bbbcbc;
+  --color-bg-gray-dark-hover:   #959697;
+  --color-bg-gray-dark-active:  #707071;
+  --color-bg-gray-darker:       #575858;
+
+  /* ================================
+     LIGHTGRAY — Foundation /lightgray
+  ================================ */
+  --color-lightgray-light:        #fcfdfd;
+  --color-lightgray-light-hover:  #fbfbfc;
+  --color-lightgray-light-active: #f7f8f9;
+  --color-lightgray:              #e5e7eb;
+  --color-lightgray-hover:        #ced0d4;
+  --color-lightgray-active:       #b7b9bc;
+  --color-lightgray-dark:         #acadb0;
+  --color-lightgray-dark-hover:   #898b8d;
+  --color-lightgray-dark-active:  #67686a;
+  --color-lightgray-darker:       #505152;
+
+  /* ================================
+     SPACING
+  ================================ */
+  --spacing-1:  2px;
+  --spacing-2:  4px;
+  --spacing-3:  8px;
+  --spacing-4:  12px;
+  --spacing-5:  16px;
+  --spacing-6:  24px;
+  --spacing-7:  32px;
+  --spacing-8:  40px;
+  --spacing-9:  48px;
+  --spacing-10: 56px;
+  --spacing-11: 64px;
+  --spacing-12: 72px;
+  --spacing-13: 80px;
+  --spacing-14: 88px;
+  --spacing-15: 96px;
+  --spacing-16: 104px;
+  --spacing-17: 112px;
+
+  /* ================================
+     BREAKPOINTS
+  ================================ */
+  --breakpoint-sm:  440px;   /* mobile  */
+  --breakpoint-md:  1024px;  /* tablet  */
+  --breakpoint-lg:  1440px;  /* desktop */
+
+}
