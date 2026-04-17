@@ -7,7 +7,9 @@ import { ApplicationsByRoleChart } from '../components/ui/ApplicationsByRoleChar
 import { QuickInsightCard } from '../components/ui/QuickInsightCard'
 import { JobCard } from '../components/ui/JobCard'
 import { InterviewScheduleCard } from '../components/ui/InterviewScheduleCard'
+import { ApplicantsListCard } from '../components/ui/ApplicantsListCard'
 import { PlusIcon } from '@heroicons/react/24/outline'
+import { MonthSelector } from '../components/ui/MonthSelector'
 
 const VACANCIES = [
   { title: 'Software Developer', tags: ['Full-time', 'Remote'],   applicantCount: 120 },
@@ -25,7 +27,7 @@ export function DashboardPage() {
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar />
 
-        <main className="flex-1 overflow-y-auto p-[24px]">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-[24px]">
 
           {/* ── Page header ─────────────────────────────────────────── */}
           <div className="flex items-center justify-between">
@@ -35,22 +37,24 @@ export function DashboardPage() {
                 Track job postings, review candidates, and manage interviews.
               </p>
             </div>
-
-            {/* Create Job button */}
-            <button
-              type="button"
-              className="flex h-[40px] items-center gap-[4px] rounded-[12px] bg-[#4F46E5] px-[12px] py-[8px] transition-colors hover:bg-[#3F38B7]"
-            >
-              <PlusIcon className="size-[16px] text-[#EDEDFC]" />
-              <span className="text-[14px] font-medium leading-[1.43] text-[#EDEDFC]">Create Job</span>
-            </button>
+            {/* Month Selector before Create Job button */}
+            <div className="flex items-center gap-4">
+              <MonthSelector />
+              <button
+                type="button"
+                className="flex h-[40px] items-center gap-[4px] rounded-[12px] bg-[#4F46E5] px-[12px] py-[8px] transition-colors hover:bg-[#3F38B7]"
+              >
+                <PlusIcon className="size-[16px] text-[#EDEDFC]" />
+                <span className="text-[14px] font-medium leading-[1.43] text-[#EDEDFC]">Create Job</span>
+              </button>
+            </div>
           </div>
 
           {/* ── Two-column content ────────────────────────────────── */}
           <div className="mt-[24px] flex gap-[16px]">
 
             {/* Left column — KPI cards + charts */}
-            <div className="flex flex-1 flex-col gap-[16px]">
+            <div className="flex min-w-0 flex-1 flex-col gap-[16px]">
               {/* KPI cards row */}
               <div className="flex gap-[16px]">
                 <KPICard label="Applications" value="400" trend={25} trendDirection="up" />
@@ -64,37 +68,44 @@ export function DashboardPage() {
                 <ApplicationsByRoleChart />
               </div>
 
-              {/* Current Vacancies section */}
-              <div className="flex flex-col gap-[16px]">
-                {/* Section header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-[4px]">
-                    <span className="text-[18px] font-medium leading-[1.333] text-[#000000]">Current Vacancies</span>
-                    <span className="text-[16px] font-medium leading-[1.5] text-[#707071]">(10)</span>
+              {/* Current Vacancies + Interview Schedule side by side */}
+              <div className="flex gap-[16px]">
+
+                {/* Current Vacancies section */}
+                <div className="flex flex-1 flex-col gap-[16px]">
+                  {/* Section header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-[4px]">
+                      <span className="text-[18px] font-medium leading-[1.333] text-[#000000]">Current Vacancies</span>
+                      <span className="text-[16px] font-medium leading-[1.5] text-[#707071]">(10)</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="flex h-[36px] items-center rounded-[8px] px-[8px] text-[14px] font-medium leading-[1.43] text-[#4F46E5] transition-colors hover:bg-[#EDEDFC]"
+                    >
+                      See all
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    className="flex h-[36px] items-center rounded-[8px] px-[8px] text-[14px] font-medium leading-[1.43] text-[#4F46E5] transition-colors hover:bg-[#EDEDFC]"
-                  >
-                    See all
-                  </button>
+
+                  {/* Cards grid — 2 rows × 2 cards */}
+                  <div className="flex flex-col gap-[16px]">
+                    <div className="flex gap-[16px]">
+                      <JobCard {...VACANCIES[0]} />
+                      <JobCard {...VACANCIES[1]} />
+                    </div>
+                    <div className="flex gap-[16px]">
+                      <JobCard {...VACANCIES[2]} />
+                      <JobCard {...VACANCIES[3]} />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Cards grid — 2 rows × 2 cards */}
-                <div className="flex flex-col gap-[16px]">
-                  <div className="flex gap-[16px]">
-                    <JobCard {...VACANCIES[0]} />
-                    <JobCard {...VACANCIES[1]} />
-                  </div>
-                  <div className="flex gap-[16px]">
-                    <JobCard {...VACANCIES[2]} />
-                    <JobCard {...VACANCIES[3]} />
-                  </div>
+                {/* Interview Schedule section */}
+                <div className="w-[560px] shrink-0">
+                  <InterviewScheduleCard />
                 </div>
+
               </div>
-
-              {/* Interview Schedule section */}
-              <InterviewScheduleCard />
 
             </div>
 
@@ -104,6 +115,11 @@ export function DashboardPage() {
               <QuickInsightCard />
             </div>
 
+          </div>
+
+          {/* Applicants List — full width below both columns */}
+          <div className="mt-[16px]">
+            <ApplicantsListCard />
           </div>
 
         </main>

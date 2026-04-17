@@ -14,7 +14,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const { bg, dot } = config[status]
 
   return (
-    <div className={`flex items-center gap-[4px] rounded-xl px-[8px] py-[4px] ${bg}`}>
+    <div className={`flex items-center gap-[4px] rounded-[12px] px-[8px] py-[8px] ${bg}`}>
       <span className={`size-[8px] shrink-0 rounded-full ${dot}`} />
       <span className="text-[12px] font-medium leading-[1.33] text-[#020617]">{status}</span>
     </div>

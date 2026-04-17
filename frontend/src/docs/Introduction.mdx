@@ -1,0 +1,158 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Guide/Introduction" />
+
+<div style={{ fontFamily: 'Inter, sans-serif', color: '#020617' }}>
+
+# Job Portal — Design System
+
+A component library for the Job Portal recruitment platform. Built with React, TypeScript, and Tailwind CSS v4.
+
+---
+
+## Getting Started
+
+```bash
+git clone <repo-url>
+cd job_portal/frontend
+npm install
+npm run dev        # http://localhost:5173
+npm run storybook  # http://localhost:6006
+```
+
+---
+
+## Tech Stack
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Technology</th>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Version</th>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    {[
+      ['React', '19', 'UI framework'],
+      ['TypeScript', '6', 'Type safety'],
+      ['Tailwind CSS', 'v4', 'Styling via @theme tokens'],
+      ['Vite', '8', 'Build tool'],
+      ['React Router', 'v7', 'Client-side routing'],
+      ['React Hook Form', 'v7', 'Form management'],
+      ['Zod', 'v4', 'Schema validation'],
+      ['Recharts', 'v3', 'Data visualization'],
+    ].map(([tech, version, purpose]) => (
+      <tr key={tech} style={{ borderBottom: '1px solid #f3f4f6' }}>
+        <td style={{ padding: '10px 12px', fontWeight: 500 }}>{tech}</td>
+        <td style={{ padding: '10px 12px', color: '#595959' }}>{version}</td>
+        <td style={{ padding: '10px 12px', color: '#595959' }}>{purpose}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+---
+
+## Color Tokens
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px', margin: '24px 0' }}>
+  {[
+    { name: 'Primary',   hex: '#4F46E5', token: '--color-primary',   text: '#fff' },
+    { name: 'Secondary', hex: '#020617', token: '--color-secondary',  text: '#fff' },
+    { name: 'Success',   hex: '#22C55E', token: '--color-success',    text: '#fff' },
+    { name: 'Warning',   hex: '#F59E0B', token: '--color-warning',    text: '#fff' },
+    { name: 'Error',     hex: '#F43F5E', token: '--color-error',      text: '#fff' },
+    { name: 'Gray 100',  hex: '#F9FAFB', token: '--color-gray-100',   text: '#020617' },
+  ].map(({ name, hex, token, text }) => (
+    <div key={token} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden' }}>
+      <div style={{ background: hex, height: '56px' }} />
+      <div style={{ padding: '8px 10px' }}>
+        <div style={{ fontSize: '13px', fontWeight: 600 }}>{name}</div>
+        <div style={{ fontSize: '11px', color: '#707071', fontFamily: 'monospace', marginTop: '2px' }}>{hex}</div>
+      </div>
+    </div>
+  ))}
+</div>
+
+---
+
+## Typography
+
+<div style={{ border: '1px solid #e5e7eb', borderRadius: '8px', overflow: 'hidden', margin: '24px 0' }}>
+  {[
+    { label: 'Display LG',   size: '48px', weight: 700 },
+    { label: 'Headline MD',  size: '28px', weight: 700 },
+    { label: 'Title LG',     size: '22px', weight: 600 },
+    { label: 'Body LG',      size: '16px', weight: 400 },
+    { label: 'Body SM',      size: '12px', weight: 400 },
+  ].map(({ label, size, weight }, i) => (
+    <div key={label} style={{
+      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      padding: '14px 20px', borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none',
+    }}>
+      <span style={{ fontSize: size, fontWeight: weight, lineHeight: 1 }}>Job Portal</span>
+      <span style={{ fontSize: '12px', color: '#707071' }}>{label} · {size}</span>
+    </div>
+  ))}
+</div>
+
+---
+
+## Component Status
+
+<table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+  <thead>
+    <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Component</th>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Status</th>
+      <th style={{ textAlign: 'left', padding: '10px 12px', color: '#505152' }}>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {[
+      ['StatusBadge',        'Stable',      '#22c55e', 'Active, Pending, Draft variants'],
+      ['JobListCard',        'Stable',      '#22c55e', 'All status variants supported'],
+      ['ApplicantsListCard', 'Stable',      '#22c55e', '4 applicant statuses'],
+      ['MonthSelector',      'Beta',        '#f59e0b', 'Single & range modes'],
+      ['Calendar',           'Beta',        '#f59e0b', 'Interview scheduling view'],
+      ['Dashboard',          'In Progress', '#4f46e5', 'Charts and stats panels'],
+    ].map(([name, status, color, notes]) => (
+      <tr key={name} style={{ borderBottom: '1px solid #f3f4f6' }}>
+        <td style={{ padding: '10px 12px', fontWeight: 500, fontFamily: 'monospace', fontSize: '13px' }}>{name}</td>
+        <td style={{ padding: '10px 12px' }}>
+          <span style={{ color, fontWeight: 600, fontSize: '13px' }}>{status}</span>
+        </td>
+        <td style={{ padding: '10px 12px', color: '#595959' }}>{notes}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+---
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/ui/     — UI components + stories
+│   ├── pages/             — Page-level views
+│   ├── styles/
+│   │   ├── token.css      — Design tokens (@theme)
+│   │   ├── global.css     — Global resets
+│   │   └── index.css      — Entry point
+│   └── App.tsx
+└── .storybook/
+    ├── main.ts
+    ├── preview.ts
+    └── preview-head.html  — Google Fonts
+```
+
+---
+
+<div style={{ fontSize: '13px', color: '#707071', paddingTop: '8px' }}>
+  Job Portal Design System · v1.0.0 · 2026
+</div>
+
+</div>

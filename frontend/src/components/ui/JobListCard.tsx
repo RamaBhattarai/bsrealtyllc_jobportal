@@ -5,7 +5,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { StatusBadge } from './StatusBadge'
 
-type StatusType = 'Active' | 'Inactive' | 'Closed'
+type StatusType = 'Active' | 'Pending' | 'Draft'
 
 interface JobListCardProps {
   title: string
@@ -72,7 +72,7 @@ export function JobListCard({
         </div>
 
         {/* Row 4 — tags */}
-        <div className="flex flex-wrap items-center gap-[8px]">
+        <div className="flex h-[24px] items-center gap-[8px] overflow-hidden">
           {tags.map(tag => (
             <span
               key={tag}
@@ -88,7 +88,7 @@ export function JobListCard({
       {/* ── Footer — applicants ─────────────────────────────────── */}
       <div className="flex items-center gap-[4px]">
         <UsersIcon className="size-[20px] shrink-0 text-[#595959]" />
-        <span className="text-[14px] font-medium leading-[1.43] text-[#595959]">
+        <span className="w-[113px] text-[14px] font-medium leading-[1.43] text-[#595959]">
           {applicantCount} Applicants
         </span>
       </div>
