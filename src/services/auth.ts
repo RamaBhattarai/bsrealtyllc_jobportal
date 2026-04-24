@@ -1,5 +1,4 @@
-// Mock auth service — swap this file when the real backend is ready.
-// Simulates a 1s network round-trip.
+import { api } from '../lib/axios'
 
 export interface SignInPayload {
   email: string
@@ -13,27 +12,19 @@ export interface AuthUser {
   token: string
 }
 
-const MOCK_CREDENTIALS = {
-  email: 'admin@gitgi.com',
-  password: 'password123',
+interface SignInResponse {
+  data: {
+    user: { id: string; email: string; name: string }
+    accessToken: string
+  }
 }
 
 export async function signIn(payload: SignInPayload): Promise<AuthUser> {
-  // Simulate network delay
-  await new Promise(r => setTimeout(r, 1000))
-
-  if (
-    payload.email === MOCK_CREDENTIALS.email &&
-    payload.password === MOCK_CREDENTIALS.password
-  ) {
-    return {
-      id: '1',
-      email: payload.email,
-      name: 'Admin User',
-      token: 'mock-jwt-token',
-    }
+  const { data } = await api.post<SignInResponse>('/auth/signin', payload)
+  return {
+    id: data.data.user.id,
+    email: data.data.user.email,
+    name: data.data.user.name,
+    token: data.data.accessToken,
   }
-
-  // Mimic a 401 from a real API
-  throw new Error('Invalid email or password. Please try again.')
 }

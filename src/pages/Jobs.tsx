@@ -1,44 +1,51 @@
 import { useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Sidebar } from '../components/ui/Sidebar'
 import { Topbar } from '../components/ui/Topbar'
 import { JobListCard } from '../components/ui/JobListCard'
+import { CreateJobModal } from '../components/ui/CreateJobModal'
+import { getJobs, createJob } from '../services/jobs'
 import { PlusIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import type { CreateJobFormValues } from '../schemas/createJob.schema'
 
 type JobStatus = 'Active' | 'Draft' | 'Pending'
 type FilterTab = 'All' | JobStatus
 
 const FILTER_TABS: FilterTab[] = ['All', 'Active', 'Draft', 'Pending']
 
-interface Job {
-  title: string
-  department: string
-  status: JobStatus
-  level: string
-  experienceRange: string
-  tags: string[]
-  applicantCount: number
-}
-
-const JOBS: Job[] = [
-  { title: 'Software Developer',  department: 'Engineering',  status: 'Active',   level: 'Senior',      experienceRange: '3-5',  tags: ['Full-time', 'Remote'],  applicantCount: 120 },
-  { title: 'Graphic Designer',    department: 'Design',       status: 'Active',   level: 'Mid-level',   experienceRange: '2-4',  tags: ['Full-time', 'Remote'],  applicantCount: 70  },
-  { title: 'Marketing Manager',   department: 'Marketing',    status: 'Pending',  level: 'Senior',      experienceRange: '5-7',  tags: ['Full-time', 'On-site'], applicantCount: 45  },
-  { title: 'UI/UX Designer',      department: 'Design',       status: 'Active',   level: 'Mid-level',   experienceRange: '2-4',  tags: ['Part-time', 'Remote'],  applicantCount: 95  },
-  { title: 'Product Manager',     department: 'Product',      status: 'Draft',    level: 'Senior',      experienceRange: '4-6',  tags: ['Full-time', 'Hybrid'],  applicantCount: 60  },
-  { title: 'Data Analyst',        department: 'Analytics',    status: 'Active',   level: 'Junior',      experienceRange: '1-3',  tags: ['Full-time', 'Remote'],  applicantCount: 88  },
-  { title: 'Customer Support',    department: 'Operations',   status: 'Pending',  level: 'Junior',      experienceRange: '0-2',  tags: ['Full-time', 'On-site'], applicantCount: 33  },
-  { title: 'DevOps Engineer',     department: 'Engineering',  status: 'Draft',    level: 'Senior',      experienceRange: '4-6',  tags: ['Full-time', 'Remote'],  applicantCount: 20  },
-]
-
 export function JobsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All')
+  const [showModal, setShowModal] = useState(false)
+  const queryClient = useQueryClient()
+
+  const { data: jobs = [], isLoading } = useQuery({
+    //      ↑          ↑
+//   rename      if empty
+//   to jobs     use [] 
+//               instead of undefined
+    queryKey: ['jobs'],
+    queryFn: getJobs,
+  })
+
+  async function handleCreateJob(values: CreateJobFormValues) {
+    const { title, department, location, type, description } = values
+    await createJob({ title, department, location, type, description })
+    await queryClient.invalidateQueries({ queryKey: ['jobs'] })
+    setShowModal(false)
+  }
 
   const filtered = activeFilter === 'All'
-    ? JOBS
-    : JOBS.filter((j) => j.status === activeFilter)
+    ? jobs
+    : jobs.filter((j) => j.status === activeFilter)
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-bg-gray">
+      {showModal && (
+        <CreateJobModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleCreateJob}
+        />
+      )}
       <Sidebar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -46,7 +53,7 @@ export function JobsPage() {
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
 
-          {/* ── Filter + Actions bar (Figma: 362:1919) ───────────── */}
+          {/* ── Filter + Actions bar ───────────────────────────── */}
           <div className="flex items-center justify-between py-0">
 
             {/* Category pills */}
@@ -88,6 +95,7 @@ export function JobsPage() {
               {/* Create Job */}
               <button
                 type="button"
+                onClick={() => setShowModal(true)}
                 className="flex h-8 items-center gap-2 rounded-[12px] bg-primary px-4 py-3 transition-colors hover:bg-primary-active"
               >
                 <PlusIcon className="size-5 text-primary-light" />
@@ -98,19 +106,17 @@ export function JobsPage() {
 
           {/* ── Job cards grid ───────────────────────────────────── */}
           <div className="mt-6 flex flex-wrap gap-5">
-            {filtered.length === 0 ? (
+            {isLoading ? (
+              <p className="w-full py-8 text-center text-body-md text-neutral-muted">Loading jobs...</p>
+            ) : filtered.length === 0 ? (
               <p className="w-full py-8 text-center text-body-md text-neutral-muted">No jobs found.</p>
             ) : (
-              filtered.map((job, idx) => (
+              filtered.map((job) => (
                 <JobListCard
-                  key={idx}
+                  key={job.id}
                   title={job.title}
                   department={job.department}
-                  status={job.status === 'Draft' ? 'Draft' : job.status === 'Pending' ? 'Pending' : 'Active'}
-                  level={job.level}
-                  experienceRange={job.experienceRange}
-                  tags={job.tags}
-                  applicantCount={job.applicantCount}
+                  status={job.status as JobStatus}
                 />
               ))
             )}

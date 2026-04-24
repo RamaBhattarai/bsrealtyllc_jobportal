@@ -1,3 +1,6 @@
+//global state manager for authentication
+//“AuthContext allows us to share user login state
+//  across the entire app without prop drilling.”
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
 import type { AuthUser } from '../services/auth'
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
@@ -16,26 +17,24 @@ export function SignInPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
-  const [apiError, setApiError] = useState('')
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
   })
 
-  const onSubmit = async (data: SignInFormValues) => {
-    setApiError('')
-    try {
-      const user = await signIn(data)
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: signIn,
+    onSuccess: user => {
       login(user)
       navigate('/dashboard')
-    } catch (err) {
-      setApiError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
-    }
-  }
+    },
+  })
+
+  const onSubmit = (data: SignInFormValues) => mutate(data)
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -119,9 +118,9 @@ export function SignInPage() {
               </div>
 
               {/* API error */}
-              {apiError && (
+              {error && (
                 <p role="alert" className="w-full text-body-md font-medium text-error">
-                  {apiError}
+                  {error.message}
                 </p>
               )}
 
@@ -131,10 +130,10 @@ export function SignInPage() {
                 variant="primary"
                 size="xl"
                 className="w-full"
-                disabled={isSubmitting}
-                leftIcon={isSubmitting ? <Spinner className="size-[18px]" /> : undefined}
+                disabled={isPending}
+                leftIcon={isPending ? <Spinner className="size-4.5" /> : undefined}
               >
-                {isSubmitting ? 'Signing in…' : 'Sign In'}
+                {isPending ? 'Signing in…' : 'Sign In'}
               </Button>
             </div>
           </form>

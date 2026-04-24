@@ -12,13 +12,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
 }
 
-// Sizes for Primary & Secondary — derived from Figma
-// xs:  padding 8px,       height 32px, gap 4px,  radius 8px,  font 12px/500
-// sm:  padding 8px 12px,  height 40px, gap 4px,  radius 12px, font 14px/500
-// md:  padding 12px 16px, hug,         gap 8px,  radius 12px, font 16px/500
-// lg:  padding 12px,      hug,         gap 8px,  radius 12px, font 18px/500
-// xl:  padding 16px,      height 52px, gap 8px,  radius 12px, font 22px/700
-// 2xl: padding 16px,      height 56px, gap 8px,  radius 12px, font 22px/700
+// Sizes for Primary & Secondary — 
+
 const sizeClasses: Record<ButtonSize, string> = {
   xs:    'h-7        p-3       gap-2 rounded-lg text-xs     font-medium',
   sm:    'h-8        py-3 px-4 gap-2 rounded-xl text-sm     font-medium',
@@ -28,14 +23,8 @@ const sizeClasses: Record<ButtonSize, string> = {
   '2xl': 'h-10       p-5       gap-3 rounded-xl text-[22px] font-bold',
 }
 
-// Sizes for Text variant — derived from Figma 
-// All sizes use radius 8px; sm/md have narrower horizontal padding than primary/secondary
-// xs:  padding 8px,       height 32px, gap 4px,  radius 8px,  font 12px/500
-// sm:  padding 8px,       height 40px, gap 4px,  radius 8px,  font 14px/500
-// md:  padding 12px 10px, hug,         gap 8px,  radius 8px,  font 16px/500
-// lg:  padding 12px,      hug,         gap 8px,  radius 8px,  font 18px/500
-// xl:  padding 16px,      height 52px, gap 8px,  radius 8px,  font 22px/700
-// 2xl: padding 16px,      height 56px, gap 8px,  radius 8px,  font 22px/700
+// Sizes for Text variant 
+
 const textSizeClasses: Record<ButtonSize, string> = {
   xs:    'h-7        p-3           gap-2 rounded-lg text-xs     font-medium',
   sm:    'h-8        p-3           gap-2 rounded-lg text-sm     font-medium',
@@ -57,11 +46,7 @@ const iconSizeClasses: Record<ButtonSize, string> = {
 }
 
 // Colors derived from Figma
-//
-// Primary  — bg #4F46E5  text #EDEDFC  hover #3F38B7  disabled-bg #C8C6F7  ring #1C1950
-// Secondary— bg #3A3F58  text #F6F8FF  hover #4A5171  disabled-bg #E7E8EA  ring #A5B4FC
-// Text     — bg transparent text #4F46E5 hover-bg #E5E3FB  disabled-bg #EFE9EC  ring #4F46E5
-// Outline  — border-2 #4F46E5 transparent-bg text #4F46E5  hover-bg #E5E3FB  ring #4F46E5
+
 const variantClasses: Record<ButtonVariant, string> = {
   primary: cn(
     'bg-primary text-primary-light',
@@ -84,9 +69,6 @@ const variantClasses: Record<ButtonVariant, string> = {
     'disabled:bg-text-btn-disabled-bg disabled:text-primary-light-active disabled:cursor-not-allowed',
   ),
 
-  // Figma node 29:1111 — Access component set
-  // Focused (rest): transparent bg, 2px solid #4F46E5 border, h-[44px], padding 16px 10px
-  // Hover:          #E5E3FB bg, border fades away
   outline: cn(
     'bg-transparent border-2 border-primary text-primary',
     'hover:bg-primary-light-hover hover:border-transparent',

@@ -11,10 +11,10 @@ interface JobListCardProps {
   title: string
   department: string
   status?: StatusType
-  level: string
-  experienceRange: string
-  tags: string[]
-  applicantCount: number
+  level?: string
+  experienceRange?: string
+  tags?: string[]
+  applicantCount?: number
   icon?: React.ReactNode
 }
 
@@ -22,10 +22,10 @@ export function JobListCard({
   title,
   department,
   status = 'Active',
-  level,
-  experienceRange,
-  tags,
-  applicantCount,
+  level = '—',
+  experienceRange = '—',
+  tags = [],
+  applicantCount = 0,
   icon,
 }: JobListCardProps) {
   return (
