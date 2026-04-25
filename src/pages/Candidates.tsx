@@ -1,44 +1,54 @@
 import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { Sidebar } from '../components/ui/Sidebar'
 import { Topbar } from '../components/ui/Topbar'
 import { DocumentIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import { getApplications, updateApplicationStatus } from '../services/applications'
 
-type Status = 'All' | 'Screening' | 'Job Offer' | 'Hired' | 'Rejected'
+type FilterTab = 'All' | 'SCREENING' | 'INTERVIEW' | 'OFFERED' | 'HIRED' | 'REJECTED'
 
-interface Candidate {
-  name: string
-  email: string
-  role: string
-  date: string
-  status: Exclude<Status, 'All'>
+const FILTER_TABS: FilterTab[] = ['All', 'SCREENING', 'INTERVIEW', 'OFFERED', 'HIRED', 'REJECTED']
+
+const FILTER_LABELS: Record<FilterTab, string> = {
+  All: 'All',
+  SCREENING: 'Screening',
+  INTERVIEW: 'Interview',
+  OFFERED: 'Job Offer',
+  HIRED: 'Hired',
+  REJECTED: 'Rejected',
 }
 
-const STATUS_CONFIG: Record<Exclude<Status, 'All'>, { dot: string }> = {
-  'Hired':     { dot: 'bg-success' },
-  'Screening': { dot: 'bg-warning' },
-  'Job Offer': { dot: 'bg-primary' },
-  'Rejected':  { dot: 'bg-error' },
+const STATUS_DOT: Record<string, string> = {
+  SCREENING: 'bg-warning',
+  INTERVIEW: 'bg-primary',
+  OFFERED:   'bg-blue-500',
+  HIRED:     'bg-success',
+  REJECTED:  'bg-error',
 }
 
-const CANDIDATES: Candidate[] = [
-  { name: 'Alex Johnson',   email: 'alex.12@gmail.com',      role: 'Software Developer', date: 'April 08, 2026', status: 'Hired'     },
-  { name: 'Jonah Neuman',   email: 'neuman.01@gmail.com',    role: 'UI/UX Designer',     date: 'Apr 10, 2026',   status: 'Screening' },
-  { name: 'Alex Johnson',   email: 'alex.12@gmail.com',      role: 'Customer Support',   date: 'Apr 22, 2026',   status: 'Job Offer' },
-  { name: 'Jonah Neuman',   email: 'neuman.01@gmail.com',    role: 'Marketing',          date: 'Apr 14, 2026',   status: 'Rejected'  },
-  { name: 'Sarah Kim',      email: 'sarah.kim@gmail.com',    role: 'Software Developer', date: 'Apr 15, 2026',   status: 'Screening' },
-  { name: 'Mike Torres',    email: 'mike.t@gmail.com',       role: 'Graphic Designer',   date: 'Apr 16, 2026',   status: 'Hired'     },
-  { name: 'Emma Davis',     email: 'emma.d@gmail.com',       role: 'UI/UX Designer',     date: 'Apr 17, 2026',   status: 'Job Offer' },
-  { name: 'Chris Brown',    email: 'chris.b@gmail.com',      role: 'Marketing Manager',  date: 'Apr 18, 2026',   status: 'Rejected'  },
-]
-
-const FILTER_TABS: Status[] = ['All', 'Screening', 'Job Offer', 'Hired', 'Rejected']
+const APPLICATION_STATUSES = ['SCREENING', 'INTERVIEW', 'OFFERED', 'HIRED', 'REJECTED'] as const
 
 export function CandidatesPage() {
-  const [activeFilter, setActiveFilter] = useState<Status>('All')
+  const [activeFilter, setActiveFilter] = useState<FilterTab>('All')
+
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  const { data: applications = [], isLoading } = useQuery({
+    queryKey: ['applications'],
+    queryFn: getApplications,
+  })
+
+  const { mutate: changeStatus } = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      updateApplicationStatus(id, status),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['applications'] }),
+  })
 
   const filtered = activeFilter === 'All'
-    ? CANDIDATES
-    : CANDIDATES.filter((c) => c.status === activeFilter)
+    ? applications
+    : applications.filter((a) => a.status === activeFilter)
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-bg-gray">
@@ -68,7 +78,7 @@ export function CandidatesPage() {
                         : 'bg-slateblue-light text-secondary hover:bg-slateblue-light-hover',
                     ].join(' ')}
                   >
-                    {tab}
+                    {FILTER_LABELS[tab]}
                   </button>
                 )
               })}
@@ -103,40 +113,67 @@ export function CandidatesPage() {
 
             {/* Rows */}
             <div className="flex flex-col pt-3">
-              {filtered.length === 0 ? (
+              {isLoading ? (
+                <p className="py-8 text-center text-body-md text-neutral-muted">Loading candidates...</p>
+              ) : filtered.length === 0 ? (
                 <p className="py-8 text-center text-body-md text-neutral-muted">No candidates found.</p>
               ) : (
-                filtered.map((candidate, idx) => {
-                  const { dot } = STATUS_CONFIG[candidate.status]
+                filtered.map((application) => {
+                  const { candidate, job, status, appliedAt } = application
+                  const dot = STATUS_DOT[status] ?? 'bg-neutral-400'
+                  const date = new Date(appliedAt).toLocaleDateString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric',
+                  })
+
                   return (
                     <div
-                      key={idx}
-                      className="flex items-center justify-between border-b border-bg-gray-hover px-[20px] py-5 last:border-b-0"
+                      key={application.id}
+                      onClick={() => navigate(`/candidates/${application.id}`)}
+                      className="flex cursor-pointer items-center justify-between border-b border-bg-gray-hover px-[20px] py-5 last:border-b-0 hover:bg-bg-gray"
                     >
                       {/* Name + Email */}
                       <div className="flex flex-1 flex-col">
-                        <span className="text-body-lg font-medium text-secondary">{candidate.name}</span>
+                        <span className="text-body-lg font-medium text-secondary">
+                          {candidate.firstName} {candidate.lastName}
+                        </span>
                         <span className="text-body-md text-bg-gray-dark-hover">{candidate.email}</span>
                       </div>
 
-                      {/* Role */}
-                      <span className="flex-1 text-body-md font-medium text-secondary">{candidate.role}</span>
+                      {/* Role (job title) */}
+                      <span className="flex-1 text-body-md font-medium text-secondary">{job.title}</span>
 
-                      {/* Date */}
-                      <span className="flex-1 text-body-md font-medium text-secondary">{candidate.date}</span>
+                      {/* Date applied */}
+                      <span className="flex-1 text-body-md font-medium text-secondary">{date}</span>
 
-                      {/* Resume + Status grouped */}
+                      {/* Resume + Status */}
                       <div className="flex w-[351px] items-center justify-between">
-                        <button
-                          type="button"
-                          className="flex items-center gap-2 rounded-[8px] bg-primary-light px-4 py-3 text-body-md font-medium text-neutral-muted transition-colors hover:bg-primary-light-hover"
-                        >
-                          <DocumentIcon className="size-[20px]" />
-                          View Resume
-                        </button>
-                        <div className="flex items-center gap-3">
+                        {candidate.resumeUrl ? (
+                          <a
+                            href={`http://localhost:5000/${candidate.resumeUrl}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-2 rounded-[8px] bg-primary-light px-4 py-3 text-body-md font-medium text-neutral-muted transition-colors hover:bg-primary-light-hover"
+                          >
+                            <DocumentIcon className="size-[20px]" />
+                            View Resume
+                          </a>
+                        ) : (
+                          <span className="text-body-md text-neutral-muted">No resume</span>
+                        )}
+                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                           <span className={`size-3 shrink-0 rounded-full ${dot}`} />
-                          <span className="text-body-md font-medium text-secondary">{candidate.status}</span>
+                          <select
+                            aria-label="Application status"
+                            value={status}
+                            onChange={(e) => changeStatus({ id: application.id, status: e.target.value })}
+                            className="rounded-lg border border-lightgray bg-white px-2 py-1 text-body-md font-medium text-secondary outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                          >
+                            {APPLICATION_STATUSES.map((s) => (
+                              <option key={s} value={s}>
+                                {s.charAt(0) + s.slice(1).toLowerCase()}
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
                     </div>

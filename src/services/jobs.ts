@@ -7,13 +7,30 @@ export interface Job {
   department: string
   location: string
   type: string
-  experienceRange: string
-  salary?: string
+  experienceLevel: string
+  minExperienceYears: number
+  maxExperienceYears: number
+  salaryMin: number
+  salaryMax: number
   description: string
+  requirements: string
   status: string
 }
 
-export type CreateJobPayload = Pick<Job, 'title' | 'department' | 'location' | 'type' | 'description'>
+export interface CreateJobPayload {
+  title: string
+  department: string
+  location: string
+  type: string
+  experienceLevel: string
+  minExperienceYears: number
+  maxExperienceYears: number
+  salaryMin: number
+  salaryMax: number
+  description: string
+  requirements: string
+  status: string
+}
 
 interface ApiResponse<T> {
   success: boolean
@@ -32,7 +49,21 @@ export async function getJobs(): Promise<Job[]> {
   return data.data.jobs
 }
 
+export async function getJobById(id: string): Promise<Job> {
+  const { data } = await api.get<ApiResponse<Job>>(`/jobs/${id}`)
+  return data.data
+}
+
 export async function createJob(payload: CreateJobPayload): Promise<Job> {
   const { data } = await api.post<ApiResponse<Job>>('/jobs', payload)
   return data.data
+}
+
+export async function updateJob(id: string, payload: Partial<CreateJobPayload>): Promise<Job> {
+  const { data } = await api.patch<ApiResponse<Job>>(`/jobs/${id}`, payload)
+  return data.data
+}
+
+export async function deleteJob(id: string): Promise<void> {
+  await api.delete(`/jobs/${id}`)
 }

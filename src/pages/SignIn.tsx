@@ -17,6 +17,7 @@ export function SignInPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [authError, setAuthError] = useState('')
 
   const {
     register,
@@ -26,15 +27,22 @@ export function SignInPage() {
     resolver: zodResolver(signInSchema),
   })
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: signIn,
     onSuccess: user => {
       login(user)
       navigate('/dashboard')
     },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+      setAuthError(msg ?? 'Invalid credentials. Please try again.')
+    },
   })
 
-  const onSubmit = (data: SignInFormValues) => mutate(data)
+  const onSubmit = (data: SignInFormValues) => {
+    setAuthError('')
+    mutate(data)
+  }
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
@@ -118,9 +126,9 @@ export function SignInPage() {
               </div>
 
               {/* API error */}
-              {error && (
+              {authError && (
                 <p role="alert" className="w-full text-body-md font-medium text-error">
-                  {error.message}
+                  {authError}
                 </p>
               )}
 

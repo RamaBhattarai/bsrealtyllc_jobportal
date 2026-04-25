@@ -12,6 +12,8 @@ import { RequestAccessSuccessPage } from './pages/RequestAccessSuccess'
 import { DashboardPage } from './pages/Dashboard'
 import { CandidatesPage } from './pages/Candidates'
 import { JobsPage } from './pages/Jobs'
+import { JobDetailPage } from './pages/JobDetail'
+import { CandidateDetailPage } from './pages/CandidateDetail'
 import { SettingsPage } from './pages/Settings'
 import { CalendarPage } from './pages/Calendar'
 
@@ -30,7 +32,9 @@ function App() {
           {/* Protected routes */}
           <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
           <Route path="/candidates" element={<RequireAuth><CandidatesPage /></RequireAuth>} />
+          <Route path="/candidates/:id" element={<RequireAuth><CandidateDetailPage /></RequireAuth>} />
           <Route path="/jobs" element={<RequireAuth><JobsPage /></RequireAuth>} />
+          <Route path="/jobs/:id" element={<RequireAuth><JobDetailPage /></RequireAuth>} />
           <Route path="/settings" element={<RequireAuth><SettingsPage /></RequireAuth>} />
           <Route path="/calendar" element={<RequireAuth><CalendarPage /></RequireAuth>} />
         </Routes>

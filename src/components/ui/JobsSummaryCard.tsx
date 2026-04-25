@@ -1,25 +1,27 @@
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline'
 
-const segments = [
-  { label: 'Active',  value: 5,  color: '#F6F8FF', legendColor: '#F6F8FF' },
-  { label: 'Draft',   value: 10, color: '#A5B4FC', legendColor: '#A5B4FC' },
-  { label: 'On Hold', value: 4,  color: '#7C87BD', legendColor: '#7C87BD' },
-  { label: 'Closed',  value: 5,  color: '#3A3F58', legendColor: '#3A3F58' },
+const SEGMENT_META = [
+  { label: 'Active',  color: '#F6F8FF' },
+  { label: 'Draft',   color: '#A5B4FC' },
+  { label: 'On Hold', color: '#7C87BD' },
+  { label: 'Closed',  color: '#3A3F58' },
 ]
 
-const total = segments.reduce((sum, s) => sum + s.value, 0)
+interface Segment { label: string; color: string; value: number }
+
 const r = 60
 const cx = 80
 const cy = 80
 const circumference = 2 * Math.PI * r
 
-function DonutChart() {
+function DonutChart({ segments }: { segments: Segment[] }) {
+  const total = segments.reduce((sum, s) => sum + s.value, 0)
   let cumulative = 0
   return (
     <div className="relative flex items-center justify-center">
       <svg width="160" height="160" viewBox="0 0 160 160">
         {segments.map((seg) => {
-          const dash = (seg.value / total) * circumference
+          const dash = total > 0 ? (seg.value / total) * circumference : 0
           const dashOffset = -cumulative
           cumulative += dash
           return (
@@ -38,7 +40,6 @@ function DonutChart() {
           )
         })}
       </svg>
-      {/* Center label */}
       <div className="absolute flex flex-col items-center">
         <span className="text-[18px] font-medium leading-[1.556] text-[#707071]">{total}</span>
         <span className="text-[14px] font-medium leading-[1.43] text-[#575858]">Total Jobs</span>
@@ -47,7 +48,21 @@ function DonutChart() {
   )
 }
 
-export function JobsSummaryCard() {
+interface JobsSummaryCardProps {
+  active?: number
+  draft?: number
+  onHold?: number
+  closed?: number
+}
+
+export function JobsSummaryCard({ active = 5, draft = 10, onHold = 4, closed = 5 }: JobsSummaryCardProps) {
+  const segments: Segment[] = [
+    { ...SEGMENT_META[0], value: active },
+    { ...SEGMENT_META[1], value: draft },
+    { ...SEGMENT_META[2], value: onHold },
+    { ...SEGMENT_META[3], value: closed },
+  ]
+
   const rows = [
     [segments[0], segments[1]],
     [segments[2], segments[3]],
@@ -62,7 +77,7 @@ export function JobsSummaryCard() {
       </div>
 
       {/* Donut chart */}
-      <DonutChart />
+      <DonutChart segments={segments} />
 
       {/* Legend */}
       <div className="flex w-full flex-col gap-[16px]">
@@ -72,7 +87,7 @@ export function JobsSummaryCard() {
               <div key={seg.label} className="flex items-center gap-[4px]">
                 <div
                   className="h-[33px] w-[6px] rounded-[4px]"
-                  style={{ backgroundColor: seg.legendColor }}
+                  style={{ backgroundColor: seg.color }}
                 />
                 <div className="flex items-center gap-[2px]">
                   <span className="text-[18px] font-medium leading-[1.556] text-[#020617]">

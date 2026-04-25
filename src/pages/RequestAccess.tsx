@@ -9,6 +9,7 @@ import logoSrc from '../assets/logo-new.png'
 import { cn } from '../lib/cn'
 import { requestAccessSchema, type RequestAccessFormValues } from '../schemas/requestAccess.schema'
 import { Spinner } from '../components/ui/Spinner'
+import { requestAccess } from '../services/auth'
 
 export function RequestAccessPage() {
   const navigate = useNavigate()
@@ -27,14 +28,14 @@ export function RequestAccessPage() {
   const department = watch('department')
   const role = watch('role')
 
-  const onSubmit = async (_data: RequestAccessFormValues) => {
+  const onSubmit = async (data: RequestAccessFormValues) => {
     setApiError('')
     try {
-      // Simulate network delay — swap for real API call when backend is ready
-      await new Promise(r => setTimeout(r, 1000))
+      await requestAccess(data)
       navigate('/request-access/success')
-    } catch (err) {
-      setApiError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+      setApiError(msg ?? 'Something went wrong. Please try again.')
     }
   }
 
@@ -119,11 +120,11 @@ export function RequestAccessPage() {
                       )}
                     >
                       <option value="" disabled hidden>Enter your Department</option>
-                      <option value="hr">Human Resources</option>
-                      <option value="engineering">Engineering</option>
-                      <option value="finance">Finance</option>
-                      <option value="operations">Operations</option>
-                      <option value="marketing">Marketing</option>
+                      <option value="HR">Human Resources</option>
+                      <option value="ENGINEERING">Engineering</option>
+                      <option value="FINANCE">Finance</option>
+                      <option value="OPERATIONS">Operations</option>
+                      <option value="MARKETING">Marketing</option>
                     </select>
                     <ChevronDownIcon className="pointer-events-none absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-800" />
                   </div>
@@ -149,10 +150,10 @@ export function RequestAccessPage() {
                       )}
                     >
                       <option value="" disabled hidden>Enter your Role</option>
-                      <option value="recruiter">Recruiter</option>
-                      <option value="hiring-manager">Hiring Manager</option>
-                      <option value="hr-admin">HR Administrator</option>
-                      <option value="interviewer">Interviewer</option>
+                      <option value="ADMIN">Admin</option>
+                      <option value="RECRUITER">Recruiter</option>
+                      <option value="HIRING_MANAGER">Hiring Manager</option>
+                      <option value="INTERVIEWER">Interviewer</option>
                     </select>
                     <ChevronDownIcon className="pointer-events-none absolute right-4 top-1/2 size-5 -translate-y-1/2 text-gray-800" />
                   </div>

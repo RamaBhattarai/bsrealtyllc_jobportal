@@ -5,7 +5,7 @@ export const signInSchema = z.object({
     .string()
     .min(1, 'Email is required')
     .email('Please use your @gitgi.com email.')
-    .endsWith('@gitgi.com', 'Please use your @gitgi.com email.'),
+    .refine((val) => val.endsWith('@gitgi.com'), 'Please use your @gitgi.com email.'),
 
   password: z
     .string()

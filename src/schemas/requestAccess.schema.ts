@@ -10,7 +10,7 @@ export const requestAccessSchema = z.object({
     .string()
     .min(1, 'Email is required')
     .email('Enter a valid email address')
-    .endsWith('@gitgi.com', 'Please use your @gitgi.com email'),
+    .refine((val) => val.endsWith('@gitgi.com'), 'Please use your @gitgi.com email'),
 
   department: z
     .string()

@@ -5,12 +5,10 @@ import {
 } from '@heroicons/react/24/outline'
 import { StatusBadge } from './StatusBadge'
 
-type StatusType = 'Active' | 'Pending' | 'Draft'
-
 interface JobListCardProps {
   title: string
   department: string
-  status?: StatusType
+  status?: string
   level?: string
   experienceRange?: string
   tags?: string[]
@@ -31,12 +29,11 @@ export function JobListCard({
   return (
     <div className="flex w-[279px] flex-col gap-[12px] rounded-xl border border-[#E0E1E2] bg-[#F9FAFB] p-[20px]">
 
-      {/* ── Main content (has bottom divider) ──────────────────── */}
+      {/* ── Main content ──────────────────────────────────────────── */}
       <div className="flex flex-col gap-[16px] border-b border-[#E6E6E6] pb-[16px]">
 
         {/* Row 1 — icon + status badge */}
         <div className="flex items-center justify-between">
-          {/* Company icon */}
           <div className="flex size-[32px] items-center justify-center rounded-lg bg-[#C8C6F7] p-[4px]">
             {icon ?? (
               <svg viewBox="0 0 24 24" fill="none" className="size-[20px] text-[#4F46E5]">
@@ -45,8 +42,6 @@ export function JobListCard({
               </svg>
             )}
           </div>
-
-          {/* Status badge */}
           <StatusBadge status={status} />
         </div>
 

@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Sidebar } from '../components/ui/Sidebar'
 import { Topbar } from '../components/ui/Topbar'
 import { Toggle } from '../components/ui/Toggle'
+import { changePassword } from '../services/auth'
 import {
-  PencilIcon,
   PlusIcon,
   EllipsisVerticalIcon,
+  EyeIcon,
+  EyeSlashIcon,
 } from '@heroicons/react/24/outline'
 
 type Tab = 'Account Settings' | 'Organization' | 'Notifications' | 'Security'
@@ -39,18 +41,44 @@ function FilledInput({ value }: { value: string }) {
     <input
       type="text"
       defaultValue={value}
+      aria-label={value}
       className="w-[532px] rounded-[4px] border border-lightgray-active bg-white px-5 py-4 text-body-lg font-normal text-slateblue-dark-active outline-none focus:border-primary"
     />
   )
 }
 
-function EmptyInput({ placeholder, type = 'text' }: { placeholder: string; type?: string }) {
+function EmptyInput({ placeholder, type = 'text', value, onChange }: { placeholder: string; type?: string; value?: string; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
   return (
     <input
       type={type}
       placeholder={placeholder}
+      value={value}
+      onChange={onChange}
       className="w-[532px] rounded-[4px] border border-lightgray-active bg-white px-5 py-4 text-body-lg font-normal text-lightgray-darker placeholder:text-lightgray-darker outline-none focus:border-primary"
     />
+  )
+}
+
+function PasswordInput({ placeholder, value, onChange }: { placeholder: string; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
+  const [show, setShow] = useState(false)
+  return (
+    <div className="relative w-[532px]">
+      <input
+        type={show ? 'text' : 'password'}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-[4px] border border-lightgray-active bg-white px-5 py-4 pr-12 text-body-lg font-normal text-lightgray-darker placeholder:text-lightgray-darker outline-none focus:border-primary"
+      />
+      <button
+        type="button"
+        onClick={() => setShow((s) => !s)}
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-lightgray-darker hover:text-secondary"
+        tabIndex={-1}
+      >
+        {show ? <EyeSlashIcon className="size-5" /> : <EyeIcon className="size-5" />}
+      </button>
+    </div>
   )
 }
 
@@ -58,6 +86,7 @@ function DropdownInput({ value, options }: { value: string; options?: string[] }
   return (
     <select
       defaultValue={value}
+      aria-label={value}
       className="w-[532px] appearance-none rounded-[4px] border border-lightgray-active bg-white px-5 py-4 text-body-lg font-normal text-slateblue-dark-active outline-none focus:border-primary"
     >
       {(options ?? [value]).map((opt) => (
@@ -159,38 +188,81 @@ function AccountSettingsTab() {
       <Divider />
 
       {/* ── Login & Access ───────────────────────────────── */}
-      <div className="flex flex-col gap-[28px]">
-        <SectionHeader
-          title="Login & Access"
-          subtitle="Manage your account access and login preferences."
-        />
+      <ChangePasswordSection />
+    </div>
+  )
+}
 
-        {/* Group: w-812, h-160 — labels at x:0,y:14 / inputs+btn at x:280,y:0 */}
+function ChangePasswordSection() {
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      await changePassword(oldPassword, newPassword)
+      setError('')
+      setSuccess(true)
+      setOldPassword('')
+      setNewPassword('')
+    } catch (err: unknown) {
+      const data = (err as { response?: { data?: { message?: string; error?: string } } })?.response?.data
+      const msg = data?.message ?? data?.error ?? 'Failed to change password. Please try again.'
+      setSuccess(false)
+      setError(msg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-[28px]">
+      <SectionHeader
+        title="Login & Access"
+        subtitle="Manage your account access and login preferences."
+      />
+
+      <form onSubmit={handleSubmit}>
         <div className="flex w-[812px] gap-[180px]">
-          {/* Labels column: w-100, h-80, justify-between, pt-14 (y:14 offset) */}
-          <div className="flex w-[100px] shrink-0 flex-col justify-between pt-[14px]" style={{ height: 80 }}>
+          {/* Labels column */}
+          <div className="flex w-[100px] shrink-0 flex-col justify-between pt-3.5" style={{ height: 80 }}>
             <p className="text-body-md font-medium text-slateblue-darker">Old Password</p>
             <p className="text-body-md font-medium text-slateblue-darker">New Password</p>
           </div>
 
-          {/* Right column: w-532, gap-12 — inputs then button */}
+          {/* Inputs + button column */}
           <div className="flex w-[532px] flex-col gap-4">
-            {/* Two inputs stacked, gap-5, NO Edit buttons */}
             <div className="flex flex-col gap-5">
-              <EmptyInput placeholder="Old Password" type="password" />
-              <EmptyInput placeholder="New Password" type="password" />
+              <PasswordInput
+                placeholder="Old Password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+              />
+              <PasswordInput
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
             </div>
-            {/* Create Job button — left-aligned under inputs */}
+
+            {error && <p className="text-body-sm text-[#F43F5E]">{error}</p>}
+            {success && <p className="text-body-sm text-[#16A34A]">Password changed successfully.</p>}
+
             <button
-              type="button"
-              className="flex h-8 w-fit items-center justify-center gap-2 rounded-[12px] bg-primary px-4 text-body-md font-medium text-primary-light"
+              type="submit"
+              disabled={isLoading}
+              className="flex h-8 w-fit items-center justify-center gap-2 rounded-[12px] bg-primary px-4 text-body-md font-medium text-primary-light disabled:opacity-60"
             >
               <PlusIcon className="h-5 w-5" />
-              Create Job
+              {isLoading ? 'Saving...' : 'Change Password'}
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

@@ -1,13 +1,14 @@
-type StatusVariant = 'Active' | 'Pending' | 'Draft'
+type StatusVariant = 'Active' | 'Pending' | 'Draft' | 'Closed'
 
 interface StatusBadgeProps {
-  status: StatusVariant
+  status: string
 }
 
 const config: Record<StatusVariant, { bg: string; dot: string }> = {
   Active:  { bg: 'bg-[#BAEDCD]', dot: 'bg-[#22C55E]' },
   Pending: { bg: 'bg-[#FCE1B3]', dot: 'bg-[#F59E0B]' },
   Draft:   { bg: 'bg-[#E0E1E2]', dot: 'bg-[#BBBCBC]' },
+  Closed:  { bg: 'bg-[#FECACA]', dot: 'bg-[#EF4444]' },
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {

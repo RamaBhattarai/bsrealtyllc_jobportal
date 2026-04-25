@@ -8,8 +8,7 @@ import {
 } from 'recharts'
 import { CalendarIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 
-// Bar heights taken from Figma pixel values, scaled to 200-unit Y axis (168px = 200u)
-const CHART_DATA = [
+const DEFAULT_CHART_DATA = [
   { label: '13 May', applications: 70,  inProcess: 23 },
   { label: '14 May', applications: 86,  inProcess: 11 },
   { label: '15 May', applications: 5,   inProcess: 3  },
@@ -18,7 +17,14 @@ const CHART_DATA = [
   { label: '18 May', applications: 4,   inProcess: 4  },
 ]
 
-export function HiringActivityChart() {
+interface HiringActivityChartProps {
+  data?: { date: string; applications: number; inProcess: number }[]
+}
+
+export function HiringActivityChart({ data }: HiringActivityChartProps) {
+  const CHART_DATA = data
+    ? data.map((d) => ({ label: d.date, applications: d.applications, inProcess: d.inProcess }))
+    : DEFAULT_CHART_DATA
   return (
     <div className="flex flex-1 flex-col gap-[16px] rounded-[12px] border border-[#E6E6E6] bg-white p-[20px]">
 

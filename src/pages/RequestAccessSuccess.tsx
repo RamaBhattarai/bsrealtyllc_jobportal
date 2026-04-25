@@ -1,7 +1,15 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import logoSrc from '../assets/logo-new.png'
 import sentSuccessSrc from '../assets/sent-success.png'
 
 export function RequestAccessSuccessPage() {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const timer = setTimeout(() => navigate('/'), 3000)
+    return () => clearTimeout(timer)
+  }, [])
   return (
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-white">
 

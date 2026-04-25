@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Sidebar } from '../components/ui/Sidebar'
 import { Topbar } from '../components/ui/Topbar'
@@ -8,28 +9,30 @@ import { getJobs, createJob } from '../services/jobs'
 import { PlusIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import type { CreateJobFormValues } from '../schemas/createJob.schema'
 
-type JobStatus = 'Active' | 'Draft' | 'Pending'
-type FilterTab = 'All' | JobStatus
+type FilterTab = 'All' | 'Active' | 'Draft' | 'Pending' | 'Closed'
 
-const FILTER_TABS: FilterTab[] = ['All', 'Active', 'Draft', 'Pending']
+function deriveLevel(minYears: number): string {
+  if (minYears <= 1) return 'Entry-level'
+  if (minYears <= 4) return 'Mid-level'
+  if (minYears <= 8) return 'Senior'
+  return 'Lead'
+}
+
+const FILTER_TABS: FilterTab[] = ['All', 'Active', 'Draft', 'Pending', 'Closed']
 
 export function JobsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All')
   const [showModal, setShowModal] = useState(false)
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const { data: jobs = [], isLoading } = useQuery({
-    //      ↑          ↑
-//   rename      if empty
-//   to jobs     use [] 
-//               instead of undefined
     queryKey: ['jobs'],
     queryFn: getJobs,
   })
 
   async function handleCreateJob(values: CreateJobFormValues) {
-    const { title, department, location, type, description } = values
-    await createJob({ title, department, location, type, description })
+    await createJob(values)
     await queryClient.invalidateQueries({ queryKey: ['jobs'] })
     setShowModal(false)
   }
@@ -53,7 +56,7 @@ export function JobsPage() {
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
 
-          {/* ── Filter + Actions bar ───────────────────────────── */}
+          {/* Filter + Actions bar */}
           <div className="flex items-center justify-between py-0">
 
             {/* Category pills */}
@@ -78,9 +81,8 @@ export function JobsPage() {
               })}
             </div>
 
-            {/* Right actions: Sort by + Create Job */}
+            {/* Right actions */}
             <div className="flex items-center gap-5">
-              {/* Sort by */}
               <div className="flex items-center gap-3">
                 <span className="text-body-lg font-medium text-gray-700">Sort by:</span>
                 <button
@@ -92,7 +94,6 @@ export function JobsPage() {
                 </button>
               </div>
 
-              {/* Create Job */}
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
@@ -104,7 +105,7 @@ export function JobsPage() {
             </div>
           </div>
 
-          {/* ── Job cards grid ───────────────────────────────────── */}
+          {/* Job cards grid */}
           <div className="mt-6 flex flex-wrap gap-5">
             {isLoading ? (
               <p className="w-full py-8 text-center text-body-md text-neutral-muted">Loading jobs...</p>
@@ -112,12 +113,15 @@ export function JobsPage() {
               <p className="w-full py-8 text-center text-body-md text-neutral-muted">No jobs found.</p>
             ) : (
               filtered.map((job) => (
-                <JobListCard
-                  key={job.id}
-                  title={job.title}
-                  department={job.department}
-                  status={job.status as JobStatus}
-                />
+                <div key={job.id} className="cursor-pointer" onClick={() => navigate(`/jobs/${job.slug}`)}>
+                  <JobListCard
+                    title={job.title}
+                    department={job.department}
+                    status={job.status}
+                    level={deriveLevel(job.minExperienceYears)}
+                    experienceRange={`${job.minExperienceYears}–${job.maxExperienceYears}`}
+                  />
+                </div>
               ))
             )}
           </div>
